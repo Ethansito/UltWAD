@@ -309,7 +309,7 @@ for item in food_objects:
     # Add item name to list of rows
     index.append(item.name)
     # Use the other parameters of the item to build the rest of the row.
-    build = [item.calories, item.protein, item.fat, item.calories]
+    build = [item.calories, item.protein, item.fat, item.carbs]
     assembler.append(build)
 # Set goals to core_data before exporting
 # This may be moved to the "goal add" and "goal edit" sections
@@ -320,7 +320,7 @@ try:
     core_data.at[day_list[0], "Fat Goal"] = fat_goal
     core_data.at[day_list[0], "Carbs Goal"] = carbs_goal
 except IndexError:
-    print("core_data empty")
+    print("Core_data empty. You must add your first day before setting goals.")
 # Reassign food registry DataFrame before exporting
 food_registry = pd.DataFrame(assembler, index=index, columns=["Calories", "Protein", "Fat", "Carbs"])
 # Exporting everything to Excel
