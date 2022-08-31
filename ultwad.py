@@ -107,24 +107,33 @@ while running:
         while registering:
             entry = input("Food and Servings (Name #): ")
             entry = entry.split()
-            # If the food input matches a registered food item, add its macros according to # number of servings to the
-            # day's count.
-            item: Food
-            for item in food_objects:
-                if entry[0] == item.name:
-                    day_calories += item.calories * float(entry[1])
-                    day_protein += item.protein * float(entry[1])
-                    day_fat += item.fat * float(entry[1])
-                    day_carbs += item.carbs * float(entry[1])
-            if entry[0].lower() == "quit":
-                # Once the user is done creating the day, update the core_data DataFrame with the new day's info.
-                assembler = [[weight, day_calories, day_protein, day_fat, day_carbs]]
-                day_data = pd.DataFrame(assembler, index=[date1],
-                                        columns=["Weight", "Calories", "Protein", "Fat", "Carbs"])
-                core_data = pd.concat([core_data, day_data])
-                day_list.append(date1)
-                registering = False
-                break
+            entry_len = len(entry)
+            try:
+                servings = float(entry[entry_len-1])
+                entry.remove(entry[entry_len-1])
+                entry = " ".join(entry)
+                # If the food input matches a registered food item,
+                # add its macros according to # number of servings to the day's count.
+                item: Food
+                for item in food_objects:
+                    if entry == item.name:
+                        day_calories += item.calories * servings
+                        day_protein += item.protein * servings
+                        day_fat += item.fat * servings
+                        day_carbs += item.carbs * servings
+            except ValueError:
+                if entry[0].lower() == "quit":
+                    # Once the user is done creating the day, update the core_data DataFrame with the new day's info.
+                    assembler = [[weight, day_calories, day_protein, day_fat, day_carbs]]
+                    day_data = pd.DataFrame(assembler, index=[date1],
+                                            columns=["Weight", "Calories", "Protein", "Fat", "Carbs"])
+                    core_data = pd.concat([core_data, day_data])
+                    day_list.append(date1)
+                    registering = False
+                    print("Day Created!")
+                    break
+                else:
+                    print("ERROR: Final input must be numerical.")
 
     # Set a fitness/diet goal
     elif command[0] == "goal" and command[1] == "set":
